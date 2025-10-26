@@ -71,4 +71,19 @@ public class Tutor {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setPets(List<Pet> pets) {
+		this.pets = pets;
+	}
+
+	public void setAdocoes(List<Adocao> adocoes) {
+		this.adocoes = adocoes;
+	}
+    
+    
+    
 }

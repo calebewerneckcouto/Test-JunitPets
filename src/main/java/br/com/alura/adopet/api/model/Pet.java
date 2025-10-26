@@ -124,4 +124,35 @@ public class Pet {
     public boolean disponivelParaAdocao() {
         return !this.adotado && this.adocao == null;
     }
+
+	public void setTipo(TipoPet tipo) {
+		this.tipo = tipo;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	public void setRaca(String raca) {
+		this.raca = raca;
+	}
+
+	public void setIdade(Integer idade) {
+		this.idade = idade;
+	}
+
+	public void setCor(String cor) {
+		this.cor = cor;
+	}
+
+	public void setPeso(Float peso) {
+		this.peso = peso;
+	}
+
+	public void setAbrigo(Abrigo abrigo) {
+		this.abrigo = abrigo;
+	}
+    
+    
+    
 }
