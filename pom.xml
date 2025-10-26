@@ -125,6 +125,12 @@
                     <excludes>
                          <exclude>br/com/alura/adopet/domain/entities/**</exclude>
                          <exclude>br/com/alura/adopet/infrastructure/**</exclude>
+                         <exclude>br/com/alura/adopet/api/model/**</exclude>
+                          <exclude>br/com/alura/adopet/api/dto/**</exclude>
+                          <exclude>br/com/alura/adopet/api/AdopetApiApplication.class</exclude>
+                            <exclude>br/com/alura/adopet/api/config/**</exclude>
+                             <exclude>br/com/alura/adopet/api/exception/**</exclude>
+                           
                        
                         
                     </excludes>
