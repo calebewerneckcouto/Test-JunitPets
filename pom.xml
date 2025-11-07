@@ -25,6 +25,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jacoco.version>0.8.10</jacoco.version>
         <replacer.plugin.version>1.5.3</replacer.plugin.version>
+        <sonar-maven-plugin.version>3.10.0.2594</sonar-maven-plugin.version>
+        <sonar.coverage.jacoco.xmlReportPaths>target/jacoco-report/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <dependencies>
@@ -214,6 +216,7 @@
                         </goals>
                         <configuration>
                             <outputDirectory>target/jacoco-report</outputDirectory>
+                            <formats>HTML,XML,CSV</formats>
                             <stylesheet>src/main/resources/jacoco-dark.css</stylesheet>
                         </configuration>
                     </execution>
@@ -233,6 +236,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M9</version>
                 <configuration>
+                    <argLine>-Dfile.encoding=UTF-8</argLine>
                     <includes>
                         <include>**/*Test.java</include>
                         <include>**/*Tests.java</include>
@@ -242,6 +246,30 @@
                         <exclude>**/*IT.java</exclude>
                     </excludes>
                 </configuration>
+            </plugin>
+
+            <!-- Plugin SonarQube -->
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>${sonar-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>sonar-analysis</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sonar</goal>
+                        </goals>
+                        <configuration>
+                            <sonar.host.url>http://localhost:9000</sonar.host.url>
+                            <sonar.login>${env.SONAR_TOKEN}</sonar.login>
+                            <sonar.coverage.jacoco.xmlReportPaths>${sonar.coverage.jacoco.xmlReportPaths}</sonar.coverage.jacoco.xmlReportPaths>
+                            <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+                            <sonar.language>java</sonar.language>
+                            <sonar.sourceEncoding>UTF-8</sonar.sourceEncoding>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- Plugin para aplicar tema escuro via substituição -->
@@ -343,72 +371,27 @@
         </profile>
         
         <profile>
-            <id>full-dark-coverage</id>
+            <id>sonar</id>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.jacoco</groupId>
-                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <groupId>org.sonarsource.scanner.maven</groupId>
+                        <artifactId>sonar-maven-plugin</artifactId>
+                        <version>${sonar-maven-plugin.version}</version>
                         <executions>
                             <execution>
-                                <id>generate-full-dark-report</id>
-                                <phase>verify</phase>
+                                <id>sonar-analysis</id>
                                 <goals>
-                                    <goal>report</goal>
+                                    <goal>sonar</goal>
                                 </goals>
                                 <configuration>
-                                    <outputDirectory>target/jacoco-full-dark-report</outputDirectory>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>com.google.code.maven-replacer-plugin</groupId>
-                        <artifactId>replacer</artifactId>
-                        <version>${replacer.plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <id>apply-full-dark-theme</id>
-                                <phase>post-integration-test</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <files>
-                                        <file>target/jacoco-full-dark-report/index.html</file>
-                                        <file>target/jacoco-full-dark-report/**/*.html</file>
-                                    </files>
-                                    <replacements>
-                                        <replacement>
-                                            <token>&lt;head&gt;</token>
-                                            <value>
-                                                &lt;head&gt;
-                                                &lt;style&gt;
-                                                body { background-color: #1e1e1e; color: #d4d4d4; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-                                                #footer { background-color: #2d2d30; color: #cccccc; border-top: 1px solid #3e3e42; }
-                                                .header { background-color: #252526; border-bottom: 1px solid #3e3e42; }
-                                                .header span { color: #ffffff; }
-                                                .breadcrumb { background-color: #2d2d30; border: 1px solid #3e3e42; }
-                                                .breadcrumb a { color: #9cdcfe; }
-                                                .el_sort { background-color: #2d2d30; color: #d4d4d4; }
-                                                .el_sort a { color: #9cdcfe; }
-                                                table { background-color: #252526; border: 1px solid #3e3e42; }
-                                                th { background-color: #2d2d30; color: #ffffff; border-bottom: 2px solid #3e3e42; }
-                                                td { border-bottom: 1px solid #3e3e42; color: #d4d4d4; }
-                                                .fc, .nc, .pc { background-color: #2d2d30; }
-                                                .bar { background-color: #0e639c; }
-                                                a { color: #9cdcfe; }
-                                                a:hover { color: #ce9178; }
-                                                h1, h2, h3, h4, h5, h6 { color: #ffffff; }
-                                                span.bar[style*="background-color: #c0c0c0"] { background-color: #3c3c3c !important; }
-                                                span.bar[style*="background-color: red"] { background-color: #f44747 !important; }
-                                                span.bar[style*="background-color: #ffc0c0"] { background-color: #4d2a2a !important; }
-                                                span.bar[style*="background-color: green"] { background-color: #4ec9b0 !important; }
-                                                span.bar[style*="background-color: #c0ffc0"] { background-color: #2d4d2a !important; }
-                                                &lt;/style&gt;
-                                            </value>
-                                        </replacement>
-                                    </replacements>
+                                    <sonar.host.url>http://localhost:9000</sonar.host.url>
+                                    <sonar.login>admin</sonar.login>
+                                    <sonar.password>admin</sonar.password>
+                                    <sonar.coverage.jacoco.xmlReportPaths>target/jacoco-report/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+                                    <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+                                    <sonar.language>java</sonar.language>
+                                    <sonar.sourceEncoding>UTF-8</sonar.sourceEncoding>
                                 </configuration>
                             </execution>
                         </executions>
